@@ -1,9 +1,22 @@
 package com.hitales.goldlable.controller;
 
+import com.hitales.goldlable.Entity.JSONResult;
+import com.hitales.goldlable.Tools.FileHelper;
+import com.hitales.goldlable.Tools.ResultUtil;
 import io.swagger.annotations.Api;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sun.plugin2.main.server.ResultID;
+
+import javax.servlet.http.HttpServletRequest;
+import java.awt.*;
+import java.util.List;
+
+import static org.springframework.http.MediaType.*;
 
 /**
  * Created by wangxi on 18/9/4.
@@ -15,7 +28,25 @@ public class GoldLabelController {
 
     @PostMapping(value = "test")
     public String test(){
-            return "你是傻逼";
+            return "test";
+    }
+
+    /**
+     * 上传文件即可以单个也可以多个同时上传
+     * @param
+     * @return
+     */
+    @ApiOperation(value = "上传金标文件",notes = "上传excel各实体金标文件")
+    @PostMapping(value = "upload")
+    @ResponseBody
+    public JSONResult upload(@RequestParam("file")  MultipartFile file){
+        try {
+            String targetPath = "./uploadFiles/";
+            FileHelper.writeClientDataToPath(file,targetPath);
+            return ResultUtil.success();
+        }catch (Exception e){
+            return ResultUtil.error(201,e.getMessage());
+        }
     }
 
 }
