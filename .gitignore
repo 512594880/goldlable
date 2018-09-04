@@ -17,6 +17,9 @@
 *.iml
 *.ipr
 /out/
+goldlable.iml
+
+
 
 ### NetBeans ###
 /nbproject/private/
