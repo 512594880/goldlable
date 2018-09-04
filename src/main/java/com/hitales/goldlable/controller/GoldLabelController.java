@@ -1,9 +1,28 @@
 package com.hitales.goldlable.controller;
 
+import com.hitales.goldlable.Entity.GoldLabelEntity;
+import com.hitales.goldlable.Entity.JSONResult;
+import com.hitales.goldlable.Tools.FileHelper;
+import com.hitales.goldlable.Tools.ResultUtil;
+import com.hitales.goldlable.repository.GoldLabel;
 import io.swagger.annotations.Api;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.ApiOperation;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by wangxi on 18/9/4.
@@ -26,7 +45,7 @@ public class GoldLabelController {
     @ApiOperation(value = "上传金标文件",notes = "上传excel各实体金标文件")
     @PostMapping(value = "upload")
     @ResponseBody
-    public JSONResult upload(@RequestParam("file")  MultipartFile file){
+    public JSONResult upload(@RequestParam("file") MultipartFile file){
         try {
             String targetPath = "./uploadFiles/";
             FileHelper.writeClientDataToPath(file,targetPath);
