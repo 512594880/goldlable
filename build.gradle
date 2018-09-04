@@ -27,6 +27,10 @@ apply plugin: 'io.spring.dependency-management'
 group = 'com.hitales'
 version = '0.0.1-SNAPSHOT'
 
+bootJar {
+	baseName = 'goldSeverce'
+	version =  '0.1.0'
+}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
