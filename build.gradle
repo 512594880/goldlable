@@ -12,6 +12,13 @@ buildscript {
 task wrapper(type: Wrapper) {
 	gradleVersion = '4.0'
 }
+
+bootJar {
+	baseName = 'gs-rest-service'
+	version =  '0.1.0'
+}
+
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
@@ -19,7 +26,10 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'com.hitales'
 version = '0.0.1-SNAPSHOT'
+
+
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
 	mavenCentral()
