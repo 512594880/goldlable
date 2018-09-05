@@ -3,6 +3,7 @@ package com.hitales.goldlable.controller;
 import com.hitales.goldlable.Entity.JSONResult;
 import com.hitales.goldlable.service.GoldLabelCompareService;
 import com.hitales.goldlable.service.GoldLableReadService;
+import com.hitales.goldlable.service.TestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,14 @@ public class GoldLabelController {
     private GoldLableReadService goldLableReadService;
     @Autowired
     private GoldLabelCompareService goldLabelCompareService;
+    @Autowired
+    private TestService testService;
+
 
     @PostMapping(value = "test")
     public String test(){
-            return "test";
+        testService.doCompare("1");
+        return "test";
     }
 
     /**

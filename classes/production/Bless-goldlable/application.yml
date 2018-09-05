@@ -1,0 +1,11 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/gold
+  application:
+    name: mongoweb
+server:
+  port: 8888
+
+
+structUrl: http://47.97.42.87:8081
