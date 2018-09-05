@@ -1,8 +1,11 @@
 package com.hitales.goldlable.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hitales.goldlable.Entity.JSONResult;
+import com.hitales.goldlable.Entity.OneStructEntity;
 import com.hitales.goldlable.service.GoldLabelCompareService;
 import com.hitales.goldlable.service.GoldLableReadService;
+import com.hitales.goldlable.service.StructService;
 import com.hitales.goldlable.service.TestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,12 +29,18 @@ public class GoldLabelController {
     private GoldLabelCompareService goldLabelCompareService;
     @Autowired
     private TestService testService;
+    @Autowired
+    private StructService structService;
 
 
     @PostMapping(value = "test")
-    public String test(){
-        testService.doCompare("1");
-        return "test";
+    public Object test(){
+        OneStructEntity oneStructEntity = new OneStructEntity();
+        oneStructEntity.setPatientId("111");
+        oneStructEntity.setRecordId("222");
+        oneStructEntity.setText("你号啊");
+        JSONObject object = structService.doStruct(oneStructEntity);
+        return object;
     }
 
     /**

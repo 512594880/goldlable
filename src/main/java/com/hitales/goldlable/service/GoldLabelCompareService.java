@@ -3,6 +3,7 @@ package com.hitales.goldlable.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hitales.goldlable.Entity.GoldLabelEntity;
+import com.hitales.goldlable.Entity.OneStructEntity;
 import com.hitales.goldlable.repository.GoldLabelRepository;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -32,7 +33,11 @@ public class GoldLabelCompareService {
                 GoldLabelEntity goldLabelEntity = goldLabelEntityList.get(i);
                 String context = goldLabelEntity.getContext();
                 //调用结构化
-                JSONObject data = structService.doStruct(goldLabelEntity.getPatientId(),goldLabelEntity.getRecordId(),context);
+                OneStructEntity oneStructEntity = new OneStructEntity();
+                oneStructEntity.setPatientId(goldLabelEntity.getPatientId());
+                oneStructEntity.setRecordId(goldLabelEntity.getRecordId());
+                oneStructEntity.setText(context);
+                JSONObject data = structService.doStruct(oneStructEntity);
 
                 //获取计分字段数量
                 int count = (int)goldLabelEntity.getList().entrySet().stream().filter(entry -> entry.getValue() != null).count();
