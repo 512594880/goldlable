@@ -6,3 +6,5 @@ spring:
     name: mongoweb
 server:
   port: 8888
+
+structUrl: http://47.97.42.87:8081/swagger-ui.html#/同步接口展示用/onlyPhonetypeUsingPOST

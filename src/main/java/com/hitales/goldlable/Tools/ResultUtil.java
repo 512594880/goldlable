@@ -10,9 +10,19 @@ import com.hitales.goldlable.Entity.JSONResult;
 public class ResultUtil {
 
     public static JSONResult success(Object object){
+        return success(object,"Success");
+    }
+
+    /**
+     *
+     * @param object  返回 数据
+     * @param msg  成功的消息 例如：success
+     * @return
+     */
+    public static JSONResult success(Object object,String msg){
         JSONResult result = new JSONResult();
         result.setCode(0);
-        result.setMsg("Success");
+        result.setMsg(msg);
         result.setData(object);
         return result;
     }
