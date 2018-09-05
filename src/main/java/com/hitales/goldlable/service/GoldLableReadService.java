@@ -23,6 +23,9 @@ import java.util.regex.Pattern;
 public class GoldLableReadService {
     @Autowired
     private GoldLabelRepository goldLabelRepository;
+
+
+
     public JSONResult readExcel(MultipartFile file){
         try {
             if (Pattern.compile(".*(xls|xlsx|xlsm)$").matcher(file.getOriginalFilename()).matches()) {
@@ -59,6 +62,21 @@ public class GoldLableReadService {
         }
         return ResultUtil.success();
     }
+
+    public void bidui(String type){
+        List<GoldLabelEntity> goldLabelEntityList = goldLabelRepository.findByType(type);
+        for (int i = 0; i < goldLabelEntityList.size(); i++) {
+            String context = goldLabelEntityList.get(i).getContext();
+            //调用结构化
+
+
+
+        }
+    }
+
+
+
+
 
     private String getType(String name){
         if (name.contains("用药"))return "用药";
