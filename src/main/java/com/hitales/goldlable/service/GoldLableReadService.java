@@ -63,7 +63,7 @@ public class GoldLableReadService {
         return ResultUtil.success();
     }
 
-    public void bidui(String type){
+    public void compare(String type){
         List<GoldLabelEntity> goldLabelEntityList = goldLabelRepository.findByType(type);
         for (int i = 0; i < goldLabelEntityList.size(); i++) {
             String context = goldLabelEntityList.get(i).getContext();
