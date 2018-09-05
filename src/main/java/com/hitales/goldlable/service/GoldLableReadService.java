@@ -63,21 +63,6 @@ public class GoldLableReadService {
         return ResultUtil.success();
     }
 
-    public void bidui(String type){
-        List<GoldLabelEntity> goldLabelEntityList = goldLabelRepository.findByType(type);
-        for (int i = 0; i < goldLabelEntityList.size(); i++) {
-            String context = goldLabelEntityList.get(i).getContext();
-            //调用结构化
-
-
-
-        }
-    }
-
-
-
-
-
     private String getType(String name){
         if (name.contains("用药"))return "用药";
         else if (name.contains("诊断"))return "诊断";
