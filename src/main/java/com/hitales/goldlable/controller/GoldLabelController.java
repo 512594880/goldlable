@@ -49,7 +49,7 @@ public class GoldLabelController {
     @ApiOperation(value = "结构化金表比对",notes = "对对应类型的数据进行结构化以及金标比对")
     @PostMapping(value = "goldLabelCompare")
     @ResponseBody
-    public void goldLabelCompare(@RequestParam("types") ArrayList<String> types){
+    public void goldLabelCompare(@RequestBody ArrayList<String> types){
         goldLabelCompareService.compare(types);
     }
 
