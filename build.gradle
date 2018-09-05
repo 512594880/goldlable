@@ -33,6 +33,7 @@ repositories {
 	mavenCentral()
 }
 
+
 dependencies {
 	compile('io.springfox:springfox-swagger2:latest.release')
 	compile('io.springfox:springfox-swagger-ui:latest.release')
@@ -42,5 +43,8 @@ dependencies {
 	compile 'org.projectlombok:lombok:1.16.18'
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	compile 'org.apache.poi:poi-ooxml:3.14'
-	compile 'org.springframework.cloud:spring-cloud-starter-feign:1.2.2.RELEASE'
+
+
+//	compile 'org.springframework.cloud:spring-cloud-starter-feign:latest.release'
+	compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.0.0.RELEASE'
 }
