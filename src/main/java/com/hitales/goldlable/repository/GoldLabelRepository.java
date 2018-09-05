@@ -6,5 +6,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 /**
  * Created by wangxi on 18/9/4.
  */
-public interface GoldLabel extends MongoRepository<GoldLabelEntity,String> {
+public interface GoldLabelRepository extends MongoRepository<GoldLabelEntity,String> {
 }
