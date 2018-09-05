@@ -1,9 +1,11 @@
 package com.hitales.goldlable.service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.hitales.goldlable.Entity.GoldLabelEntity;
-import com.hitales.goldlable.Tools.Constant;
 import com.hitales.goldlable.repository.GoldLabelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,48 +16,44 @@ import java.util.List;
 @Service
 public class GoldLabelCompareService {
 
+    @Value("${structUrl}")
+    private String structUrl;
+
     @Autowired
     private GoldLabelRepository goldLabelRepository;
 
-    @Autowired
-    private StructService structService;
-
     public void compare(List<String> types){
         for (String type:types) {
-            switch (type){
-                case Constant.TYPE_DRUG:
-                    drugComparre(type);
-                    break;
-                case Constant.TYPE_DIAG:
+            List<GoldLabelEntity> goldLabelEntityList = goldLabelRepository.findByType(type);
+            for (int i = 0; i < goldLabelEntityList.size(); i++) {
+                GoldLabelEntity goldLabelEntity = goldLabelEntityList.get(i);
+                String context = goldLabelEntity.getContext();
+                //调用结构化
+                JSONObject data = new JSONObject();
 
-                    break;
-                case Constant.TYPE_SYMPTOM:
 
-                    break;
-                case Constant.TYPE_TEST:
+                //获取计分字段数量
+                int count = (int)goldLabelEntity.getList().entrySet().stream().filter(entry -> entry.getValue() != null).count();
 
-                    break;
+                //获取msdata
+                JSONObject msdata = data.getJSONObject("msdata");
+                //获取实体数据
+                JSONArray entity = msdata.getJSONArray(type);
+                // TODO: 18/9/5  找出实体数据中得分更高的
+                for (int j = 0; j < entity.size(); j++) {
+                    int errorSize = 0;
+                    JSONObject typeEntity = entity.getJSONObject(i);
+                    goldLabelEntity.getList().forEach((s, s2) -> {
+                        if (!typeEntity.getString(s).equals(s2)){
+
+                        }
+                    });
+                }
+
+
 
             }
-        }
-    }
-
-
-    private void drugComparre(String type){
-        List<GoldLabelEntity> goldLabelEntityList = goldLabelRepository.findByType(type);
-        for (int i = 0; i < goldLabelEntityList.size(); i++) {
-            String context = goldLabelEntityList.get(i).getContext();
-            //调用结构化
-
 
         }
     }
-
-
-
-
-
-
-
-
 }

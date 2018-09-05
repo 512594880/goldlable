@@ -63,6 +63,11 @@ public class GoldLableReadService {
         return ResultUtil.success();
     }
 
+
+
+
+
+
     private String getType(String name){
         if (name.contains("用药"))return "用药";
         else if (name.contains("诊断"))return "诊断";
