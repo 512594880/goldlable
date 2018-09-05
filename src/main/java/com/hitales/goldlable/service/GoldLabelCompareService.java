@@ -1,8 +1,5 @@
 package com.hitales.goldlable.service;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.hitales.goldlable.Entity.GoldLabelEntity;
 import com.hitales.goldlable.repository.GoldLabelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
