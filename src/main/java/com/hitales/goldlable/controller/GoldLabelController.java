@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by wangxi on 18/9/4.
@@ -48,7 +48,8 @@ public class GoldLabelController {
 
     @ApiOperation(value = "结构化金表比对",notes = "对对应类型的数据进行结构化以及金标比对")
     @PostMapping(value = "goldLabelCompare")
-    public void goldLabelCompare(List<String> types){
+    @ResponseBody
+    public void goldLabelCompare(@RequestParam("types") ArrayList<String> types){
         goldLabelCompareService.compare(types);
     }
 
