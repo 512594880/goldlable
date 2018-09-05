@@ -4,19 +4,9 @@ import com.hitales.goldlable.Entity.JSONResult;
 import com.hitales.goldlable.Tools.FileHelper;
 import com.hitales.goldlable.Tools.ResultUtil;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sun.plugin2.main.server.ResultID;
-
-import javax.servlet.http.HttpServletRequest;
-import java.awt.*;
-import java.util.List;
-
-import static org.springframework.http.MediaType.*;
 
 /**
  * Created by wangxi on 18/9/4.
