@@ -22,6 +22,8 @@ public class GoldLabelEntity {
 
     private String type;
 
+    private String tag;
+
     /**
      * 各实体表头结果
      */
