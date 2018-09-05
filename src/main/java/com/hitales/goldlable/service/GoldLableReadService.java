@@ -63,16 +63,6 @@ public class GoldLableReadService {
         return ResultUtil.success();
     }
 
-    public void compare(String type){
-        List<GoldLabelEntity> goldLabelEntityList = goldLabelRepository.findByType(type);
-        for (int i = 0; i < goldLabelEntityList.size(); i++) {
-            String context = goldLabelEntityList.get(i).getContext();
-            //调用结构化
-
-
-
-        }
-    }
 
 
 
