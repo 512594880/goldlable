@@ -8,4 +8,6 @@ public class Constant {
     private static final String  TYPE_DIAG = "diag";
     private static final String  TYPE_TEST = "test";
     private static final String  TYPE_SYMPTOM = "symptom";
+
+
 }
