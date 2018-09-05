@@ -73,6 +73,7 @@ public class GoldLableReadService {
         else if (name.contains("诊断"))return "诊断";
         else if (name.contains("化验"))return "化验";
         else if (name.contains("症状") || name.contains("体征")) return "症状&体征";
+        else if (name.contains("家族史")) return "家族史";
         return "错误类型";
     }
 }
