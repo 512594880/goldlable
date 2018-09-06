@@ -40,7 +40,7 @@ public class GoldLabelCompareService {
                 oneStructEntity.setPatientId(goldLabelEntity.getPatientId());
                 oneStructEntity.setRecordId(goldLabelEntity.getRecordId());
                 oneStructEntity.setText(context);
-                JSONObject data = new JSONObject();
+                JSONObject data;
                 try {
                     data = structService.doStruct(oneStructEntity);
                 }catch (Exception e){
@@ -114,6 +114,10 @@ public class GoldLabelCompareService {
             HashMap<String,String> data = new HashMap<>();
             int errorSize = 0;
             JSONObject typeEntity = entity.getJSONObject(j);
+
+            //TODO 由于结构化key和表头不一致  将结构化的实体映射成goldLavel 进行比对
+
+
             for (Map.Entry<String,String> m : goldLabelEntity.getList().entrySet()){
                 if (typeEntity.getString(m.getKey()) == null && (m.getValue().equals("") || m.getValue() == null)){
 

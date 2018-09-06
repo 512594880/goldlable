@@ -265,7 +265,24 @@ public class FileHelper {
 			}
 		}
 	}
-	
+
+	public static String ReadDataFromFile(File file){
+		try {
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(new FileInputStream(file), GetFilecharset(file)));
+			StringBuilder builder = new StringBuilder();
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				builder.append(line + "\n");
+			}
+			reader.close();
+			return builder.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	
 	public static byte[] ReadDataFromFile(String desPath) throws IOException {
 		FileChannel fc = null;  
