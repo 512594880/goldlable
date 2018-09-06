@@ -28,7 +28,6 @@ public class GoldLableReadService {
     private GoldLabelRepository goldLabelRepository;
 
 
-
     public JSONResult readExcel(MultipartFile file){
         try {
             if (Pattern.compile(".*(xls|xlsx|xlsm)$").matcher(file.getOriginalFilename()).matches()) {
@@ -59,15 +58,7 @@ public class GoldLableReadService {
                         map.remove(key);
                     }
 
-
-
-//                    goldLabelEntity.setContext(map.get("上下文"));
-//                    goldLabelEntity.setRecordId(map.get("病例（RID）"));
-//                    goldLabelEntity.setPatientId(map.get("患者（PID）"));
                     goldLabelEntity.setType(getType(file.getOriginalFilename()));
-//                    map.remove("上下文");
-//                    map.remove("病例（RID）");
-//                    map.remove("患者（PID）");
                     goldLabelEntity.setList(map);
                     goldLabelRepository.save(goldLabelEntity);
                 }
