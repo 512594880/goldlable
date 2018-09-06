@@ -4,7 +4,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hitales.goldlable.Entity.GoldLabelEntity;
 import com.hitales.goldlable.Entity.OneStructEntity;
+import com.hitales.goldlable.Tools.Constant;
 import com.hitales.goldlable.repository.GoldLabelRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -14,11 +18,13 @@ import org.springframework.stereotype.Service;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Created by wangxi on 18/9/5.
  */
 @Service
+@Slf4j
 public class GoldLabelCompareService {
     @Autowired
     private StructService structService;
@@ -29,9 +35,11 @@ public class GoldLabelCompareService {
 
     public void compare(List<String> types){
         for (String type:types) {
+            JSONObject keymap = Constant.keyMap.get(type);
             XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
             XSSFSheet xssfSheet = xssfWorkbook.createSheet();
-
+            CellStyle cellStyle = xssfWorkbook.createCellStyle();
+            cellStyle.setFillForegroundColor(IndexedColors.GREEN.getIndex());
             List<GoldLabelEntity> goldLabelEntityList = goldLabelRepository.findByType(type);
             goldLabelEntityList.parallelStream().forEach((goldLabelEntity) -> {
 //                System.out.println("份数："+i);
@@ -56,9 +64,9 @@ public class GoldLabelCompareService {
                 JSONObject msdata = data.getJSONObject("msdata");
                 //获取实体数据
                 JSONArray entity = msdata.getJSONArray(type);
-                HashMap<String,String> result = dobidui(entity,goldLabelEntity,count);
+                HashMap<String,String> result = dobidui(entity,goldLabelEntity,count,keymap);
                 //往表格中添加数据
-                addxssfSheet(xssfSheet,goldLabelEntity,result);
+                addxssfSheet(xssfSheet,goldLabelEntity,result,cellStyle);
             });
 
 
@@ -67,7 +75,7 @@ public class GoldLabelCompareService {
                 xssfWorkbook.write(fos);
                 fos.close();
                 xssfWorkbook.close();
-                System.out.println("成功");
+                log.info("成功");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -75,7 +83,7 @@ public class GoldLabelCompareService {
         }
     }
 
-    private void addxssfSheet(XSSFSheet xssfSheet, GoldLabelEntity goldLabelEntity, HashMap<String, String> result) {
+    private void addxssfSheet(XSSFSheet xssfSheet, GoldLabelEntity goldLabelEntity, HashMap<String, String> result, CellStyle cellStyle) {
         List<String> heading = new ArrayList<>();
         heading.add("recordId");
         heading.add("patientId");
@@ -92,11 +100,11 @@ public class GoldLabelCompareService {
         heading.stream().skip(3).forEach(s -> row.createCell(row.getLastCellNum()).setCellValue(goldLabelEntity.getList().get(s)));
         row.createCell(row.getLastCellNum()).setCellValue(result.get("比对得分"));
 
-        //第一行 为结构化结果所在行
+        //第二行 为结构化结果所在行
         Row row2 = addRowGuDing(xssfSheet,goldLabelEntity);
         heading.stream().skip(3).forEach(s -> row2.createCell(row2.getLastCellNum()).setCellValue(result.get(s) == null?"":result.get(s)));
         row2.createCell(row2.getLastCellNum()).setCellValue(result.get("比对得分"));
-
+        row2.forEach(cell -> cell.setCellStyle(cellStyle));
 
     }
 
@@ -109,30 +117,45 @@ public class GoldLabelCompareService {
         return row;
     }
 
-    private HashMap<String,String> dobidui(JSONArray entity, GoldLabelEntity goldLabelEntity, int count) {
+    private HashMap<String,String> dobidui(JSONArray entity, GoldLabelEntity goldLabelEntity, int count, JSONObject keymap) {
         Map<Float,HashMap<String,String>> resultMap = new HashMap<>();
         // TODO: 18/9/5  找出实体数据中得分更高的
         for (int j = 0; j < entity.size(); j++) {
             HashMap<String,String> data = new HashMap<>();
-            int errorSize = 0;
+            int[] errorSize = {0};
             JSONObject typeEntity = entity.getJSONObject(j);
 
             //TODO 由于结构化key和表头不一致  将结构化的实体映射成goldLavel 进行比对
+            HashMap<String,String> goldData = goldLabelEntity.getList();
 
-
-            for (Map.Entry<String,String> m : goldLabelEntity.getList().entrySet()){
-                if (typeEntity.getString(m.getKey()) == null && (m.getValue().equals("") || m.getValue() == null)){
-
-                }else if (typeEntity.getString(m.getKey()) == null || !typeEntity.getString(m.getKey()).equals(m.getValue())){
-                    errorSize++;
+            keymap.forEach((s, o) -> {
+                String jiegouhuaKey = s;
+                String goldKey = o.toString();
+                String jiegouhuaValue = typeEntity.getString(s);
+                String goldValue = goldData.get(goldKey);
+                if ((jiegouhuaValue == null || jiegouhuaValue.equals("")) && (goldValue == null || goldValue.equals(""))){}
+                else if (jiegouhuaValue == null || !jiegouhuaValue.equals(goldValue)){
+                    errorSize[0]++;
                 }
-                data.put(m.getKey(),typeEntity.getString(m.getKey()));
-            }
-            float score = (1-(float)Math.abs(count-errorSize)/count)*100;
+                data.put(goldKey,typeEntity.getString(jiegouhuaKey));
+            });
+
+
+//            for (Map.Entry<String,String> m : goldLabelEntity.getList().entrySet()){
+//                if (typeEntity.getString(m.getKey()) == null && (m.getValue().equals("") || m.getValue() == null)){
+//
+//                }else if (typeEntity.getString(m.getKey()) == null || !typeEntity.getString(m.getKey()).equals(m.getValue())){
+//                    errorSize[0]++;
+//                }
+//                data.put(m.getKey(),typeEntity.getString(m.getKey()));
+//            }
+            float score = (1-(float)errorSize[0]/count)*100;
             // TODO: 18/9/5 可能会有得分相同的两条实体，后一条会覆盖前一条
             resultMap.put(score,data);
         }
-        Optional<Map.Entry<Float,HashMap<String,String>>> resultOptional = resultMap.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).findFirst();
+
+        Optional<Entry<Float,HashMap<String,String>>> resultOptional = resultMap.entrySet().stream()
+                .sorted(Map.Entry.<Float,HashMap<String,String>>comparingByKey().reversed()).findFirst();
         if (resultOptional.isPresent()){
             HashMap<String,String> result = resultOptional.get().getValue();
             result.put("比对得分",resultOptional.get().getKey().toString());
