@@ -11,6 +11,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -30,6 +32,7 @@ public class GoldLabelCompareService {
             XSSFSheet xssfSheet = xssfWorkbook.createSheet();
             List<GoldLabelEntity> goldLabelEntityList = goldLabelRepository.findByType(type);
             for (int i = 0; i < goldLabelEntityList.size(); i++) {
+                System.out.println("份数："+i);
                 GoldLabelEntity goldLabelEntity = goldLabelEntityList.get(i);
                 String context = goldLabelEntity.getContext();
                 //调用结构化
@@ -37,10 +40,16 @@ public class GoldLabelCompareService {
                 oneStructEntity.setPatientId(goldLabelEntity.getPatientId());
                 oneStructEntity.setRecordId(goldLabelEntity.getRecordId());
                 oneStructEntity.setText(context);
-                JSONObject data = structService.doStruct(oneStructEntity);
+                JSONObject data = new JSONObject();
+                try {
+                    data = structService.doStruct(oneStructEntity);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    continue;
+                }
 
                 //获取计分字段数量
-                int count = (int)goldLabelEntity.getList().entrySet().stream().filter(entry -> entry.getValue() != null).count();
+                int count = (int)goldLabelEntity.getList().entrySet().stream().filter(entry -> entry.getValue() != null && !"".equals(entry.getValue())).count();
 
                 //获取msdata
                 JSONObject msdata = data.getJSONObject("msdata");
@@ -49,7 +58,16 @@ public class GoldLabelCompareService {
                 HashMap<String,String> result = dobidui(entity,goldLabelEntity,count);
                 //往表格中添加数据
                 addxssfSheet(xssfSheet,goldLabelEntity,result);
+            }
 
+            try {
+                FileOutputStream fos = new FileOutputStream("./OriginExcel/"+type+".xlsx");
+                xssfWorkbook.write(fos);
+                fos.close();
+                xssfWorkbook.close();
+                System.out.println("成功");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
         }
@@ -63,7 +81,7 @@ public class GoldLabelCompareService {
         goldLabelEntity.getList().forEach((s, s2) -> heading.add(s));
         if (xssfSheet.getLastRowNum() < 1){
             Row row = xssfSheet.createRow(0);
-            heading.forEach(s ->row.createCell(row.getLastCellNum()).setCellValue(s));
+            heading.forEach(s ->row.createCell(row.getLastCellNum() == -1?0:row.getLastCellNum()).setCellValue(s));
             row.createCell(heading.size()).setCellValue("比对得分");
         }
 
@@ -74,7 +92,7 @@ public class GoldLabelCompareService {
 
         //第一行 为结构化结果所在行
         Row row2 = addRowGuDing(xssfSheet,goldLabelEntity);
-        heading.stream().skip(3).forEach(s -> row2.createCell(row2.getLastCellNum()).setCellValue(result.get(s)));
+        heading.stream().skip(3).forEach(s -> row2.createCell(row2.getLastCellNum()).setCellValue(result.get(s) == null?"":result.get(s)));
         row2.createCell(row2.getLastCellNum()).setCellValue(result.get("比对得分"));
 
 
@@ -82,8 +100,8 @@ public class GoldLabelCompareService {
 
     //添加固定字段
     private Row addRowGuDing(XSSFSheet xssfSheet, GoldLabelEntity goldLabelEntity) {
-        Row row = xssfSheet.createRow(xssfSheet.getLastRowNum());
-        row.createCell(row.getLastCellNum()).setCellValue(goldLabelEntity.getRecordId());
+        Row row = xssfSheet.createRow(xssfSheet.getLastRowNum() + 1);
+        row.createCell(0).setCellValue(goldLabelEntity.getRecordId());
         row.createCell(row.getLastCellNum()).setCellValue(goldLabelEntity.getPatientId());
         row.createCell(row.getLastCellNum()).setCellValue(goldLabelEntity.getContext());
         return row;
@@ -97,7 +115,9 @@ public class GoldLabelCompareService {
             int errorSize = 0;
             JSONObject typeEntity = entity.getJSONObject(j);
             for (Map.Entry<String,String> m : goldLabelEntity.getList().entrySet()){
-                if (!typeEntity.getString(m.getKey()).equals(m.getValue())){
+                if (typeEntity.getString(m.getKey()) == null && (m.getValue().equals("") || m.getValue() == null)){
+
+                }else if (typeEntity.getString(m.getKey()) == null || !typeEntity.getString(m.getKey()).equals(m.getValue())){
                     errorSize++;
                 }
                 data.put(m.getKey(),typeEntity.getString(m.getKey()));
@@ -112,6 +132,10 @@ public class GoldLabelCompareService {
             result.put("比对得分",resultOptional.get().getKey().toString());
             return result;
         }
-        else return null;
+        else{
+            HashMap<String,String> result = new HashMap<>();
+            result.put("比对得分",0+"");
+            return result;
+        }
     }
 }

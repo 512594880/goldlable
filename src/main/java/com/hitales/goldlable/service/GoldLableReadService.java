@@ -46,11 +46,11 @@ public class GoldLableReadService {
                     }
                     GoldLabelEntity goldLabelEntity = new GoldLabelEntity();
                     goldLabelEntity.setContext(map.get("上下文"));
-                    goldLabelEntity.setRecordId(map.get("病历（RID）"));
+                    goldLabelEntity.setRecordId(map.get("病例（RID）"));
                     goldLabelEntity.setPatientId(map.get("患者（PID）"));
                     goldLabelEntity.setType(getType(file.getOriginalFilename()));
                     map.remove("上下文");
-                    map.remove("病历（RID）");
+                    map.remove("病例（RID）");
                     map.remove("患者（PID）");
                     goldLabelEntity.setList(map);
                     goldLabelRepository.save(goldLabelEntity);
@@ -74,6 +74,7 @@ public class GoldLableReadService {
         else if (name.contains("化验"))return "化验";
         else if (name.contains("症状") || name.contains("体征")) return "症状&体征";
         else if (name.contains("家族史")) return "家族史";
+        else if (name.contains("月经史"))return "月经史";
         return "错误类型";
     }
 }
