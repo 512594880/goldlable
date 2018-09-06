@@ -85,7 +85,7 @@ public class GoldLableReadService {
         else if (name.contains(Constant.TYPE_TEST))return Constant.TYPE_TEST;
         else if (name.contains("症状") || name.contains("体征")) return Constant.TYPE_SYMPTOM;
         else if (name.contains(Constant.TYPE_FAMILY_HISTORY)) return Constant.TYPE_FAMILY_HISTORY;
-        else if (name.contains("月经史"))return "月经史";
+        else if (name.contains(Constant.TYPE_MENSTRUAL_HISTORY))return Constant.TYPE_MENSTRUAL_HISTORY;
         return "错误类型";
     }
 }
