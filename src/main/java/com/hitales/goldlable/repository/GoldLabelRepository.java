@@ -9,5 +9,5 @@ import java.util.List;
  * Created by wangxi on 18/9/4.
  */
 public interface GoldLabelRepository extends MongoRepository<GoldLabelEntity,String> {
-    public List<GoldLabelEntity> findByType(String type);
+     List<GoldLabelEntity> findByType(String type);
 }
