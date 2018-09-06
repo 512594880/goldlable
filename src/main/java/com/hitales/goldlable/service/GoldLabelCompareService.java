@@ -26,14 +26,15 @@ public class GoldLabelCompareService {
     @Autowired
     private GoldLabelRepository goldLabelRepository;
 
+
     public void compare(List<String> types){
         for (String type:types) {
             XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
             XSSFSheet xssfSheet = xssfWorkbook.createSheet();
+
             List<GoldLabelEntity> goldLabelEntityList = goldLabelRepository.findByType(type);
-            for (int i = 0; i < goldLabelEntityList.size(); i++) {
-                System.out.println("份数："+i);
-                GoldLabelEntity goldLabelEntity = goldLabelEntityList.get(i);
+            goldLabelEntityList.parallelStream().forEach((goldLabelEntity) -> {
+//                System.out.println("份数："+i);
                 String context = goldLabelEntity.getContext();
                 //调用结构化
                 OneStructEntity oneStructEntity = new OneStructEntity();
@@ -45,7 +46,7 @@ public class GoldLabelCompareService {
                     data = structService.doStruct(oneStructEntity);
                 }catch (Exception e){
                     e.printStackTrace();
-                    continue;
+                    return;
                 }
 
                 //获取计分字段数量
@@ -58,7 +59,8 @@ public class GoldLabelCompareService {
                 HashMap<String,String> result = dobidui(entity,goldLabelEntity,count);
                 //往表格中添加数据
                 addxssfSheet(xssfSheet,goldLabelEntity,result);
-            }
+            });
+
 
             try {
                 FileOutputStream fos = new FileOutputStream("./OriginExcel/"+type+".xlsx");

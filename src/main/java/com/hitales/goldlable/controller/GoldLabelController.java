@@ -1,19 +1,19 @@
 package com.hitales.goldlable.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.hitales.goldlable.Entity.JSONResult;
-import com.hitales.goldlable.Entity.OneStructEntity;
 import com.hitales.goldlable.service.GoldLabelCompareService;
 import com.hitales.goldlable.service.GoldLableReadService;
 import com.hitales.goldlable.service.StructService;
 import com.hitales.goldlable.service.TestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by wangxi on 18/9/4.
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 @Api(value = "GoldLabelController",description = "GoldLabelController")
 @RestController
 @RequestMapping("/")
+@Slf4j
 public class GoldLabelController {
 
     @Autowired
@@ -34,13 +35,10 @@ public class GoldLabelController {
 
 
     @PostMapping(value = "test")
-    public Object test(){
-        OneStructEntity oneStructEntity = new OneStructEntity();
-        oneStructEntity.setPatientId("111");
-        oneStructEntity.setRecordId("222");
-        oneStructEntity.setText("你号啊");
-        JSONObject object = structService.doStruct(oneStructEntity);
-        return object;
+    public Object test(@RequestBody String str) throws ExecutionException, InterruptedException {
+        testService.doCompare("你好啊" + str);
+
+        return str;
     }
 
     /**
