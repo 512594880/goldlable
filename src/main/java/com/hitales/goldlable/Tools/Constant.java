@@ -17,6 +17,9 @@ public class Constant {
     public static final String  TYPE_DIAG = "诊断";
     public static final String  TYPE_TEST = "化验";
     public static final String  TYPE_SYMPTOM = "症状&体征";
+    public static final String TYPE_FAMILY_HISTORY = "家族史";
+    public static final String TYPE_MENSTRUAL_HISTORY = "月经史";
+    public static final String  TYPE_ERROR = "错误类型";
     public static final String [] DrugShare = {"医院","科室/病种","患者（PID）","病例（RID）","锚点","上下文","备注"};
 
     public static final String [] DrugShareMethodName = {"setHospital","setDepartments","setPatientId","setRecordId","setAnchor","setContext","setRemark"};

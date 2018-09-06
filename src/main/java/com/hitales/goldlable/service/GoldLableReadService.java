@@ -79,17 +79,12 @@ public class GoldLableReadService {
         return ResultUtil.success();
     }
 
-
-
-
-
-
     private String getType(String name){
-        if (name.contains("用药"))return "用药";
-        else if (name.contains("诊断"))return "诊断";
-        else if (name.contains("化验"))return "化验";
-        else if (name.contains("症状") || name.contains("体征")) return "症状&体征";
-        else if (name.contains("家族史")) return "家族史";
+        if (name.contains(Constant.TYPE_DRUG))return Constant.TYPE_DRUG;
+        else if (name.contains(Constant.TYPE_DIAG))return Constant.TYPE_DIAG;
+        else if (name.contains(Constant.TYPE_TEST))return Constant.TYPE_TEST;
+        else if (name.contains("症状") || name.contains("体征")) return Constant.TYPE_SYMPTOM;
+        else if (name.contains(Constant.TYPE_FAMILY_HISTORY)) return Constant.TYPE_FAMILY_HISTORY;
         else if (name.contains("月经史"))return "月经史";
         return "错误类型";
     }
