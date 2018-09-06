@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +40,14 @@ public class GoldLabelCompareService {
             XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
             XSSFSheet xssfSheet = xssfWorkbook.createSheet();
             CellStyle cellStyle = xssfWorkbook.createCellStyle();
-            cellStyle.setFillForegroundColor(IndexedColors.GREEN.getIndex());
+            XSSFFont xssfFont = xssfWorkbook.createFont();
+            xssfFont.setColor(IndexedColors.BLUE.getIndex());
+            cellStyle.setFont(xssfFont);
+            CellStyle errorStyle = xssfWorkbook.createCellStyle();
+            errorStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+            errorStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
             List<GoldLabelEntity> goldLabelEntityList = goldLabelRepository.findByType(type);
+            final int[] rightSize = {0};
             goldLabelEntityList.parallelStream().forEach((goldLabelEntity) -> {
 //                System.out.println("份数："+i);
                 String context = goldLabelEntity.getContext();
@@ -65,12 +72,16 @@ public class GoldLabelCompareService {
                 //获取实体数据
                 JSONArray entity = msdata.getJSONArray(type);
                 HashMap<String,String> result = dobidui(entity,goldLabelEntity,count,keymap);
+                if (result.get("比对得分").equals("100.0")) rightSize[0]++;
                 //往表格中添加数据
-                addxssfSheet(xssfSheet,goldLabelEntity,result,cellStyle);
+                addxssfSheet(xssfSheet,goldLabelEntity,result,cellStyle,errorStyle);
             });
+            //添加总分
+            addxssfSheetTotal(xssfSheet,rightSize[0],goldLabelEntityList.size());
 
 
             try {
+
                 FileOutputStream fos = new FileOutputStream("./OriginExcel/"+type+".xlsx");
                 xssfWorkbook.write(fos);
                 fos.close();
@@ -83,7 +94,13 @@ public class GoldLabelCompareService {
         }
     }
 
-    private void addxssfSheet(XSSFSheet xssfSheet, GoldLabelEntity goldLabelEntity, HashMap<String, String> result, CellStyle cellStyle) {
+    private void addxssfSheetTotal(XSSFSheet xssfSheet, int rightSize, int size) {
+        xssfSheet.getRow(0).createCell(xssfSheet.getLastRowNum()+1).setCellValue("总分"+rightSize+"/"+size);
+        xssfSheet.getRow(0).createCell(xssfSheet.getLastRowNum()+1).setCellValue((float)rightSize/size);
+    }
+
+
+    private void addxssfSheet(XSSFSheet xssfSheet, GoldLabelEntity goldLabelEntity, HashMap<String, String> result, CellStyle cellStyle, CellStyle errorStyle) {
         List<String> heading = new ArrayList<>();
         heading.add("recordId");
         heading.add("patientId");
@@ -104,7 +121,14 @@ public class GoldLabelCompareService {
         Row row2 = addRowGuDing(xssfSheet,goldLabelEntity);
         heading.stream().skip(3).forEach(s -> row2.createCell(row2.getLastCellNum()).setCellValue(result.get(s) == null?"":result.get(s)));
         row2.createCell(row2.getLastCellNum()).setCellValue(result.get("比对得分"));
-        row2.forEach(cell -> cell.setCellStyle(cellStyle));
+//        for (int i = 0; i < row2.getLastCellNum(); i++) {
+//            row2.getCell(i).setCellStyle(cellStyle);
+//        }
+
+        if (!result.get("比对得分").equals("100.0")){
+            row2.forEach(cell -> cell.setCellStyle(errorStyle));
+        }else row2.forEach(cell -> cell.setCellStyle(cellStyle));
+
 
     }
 

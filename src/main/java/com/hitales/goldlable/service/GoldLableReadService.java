@@ -38,7 +38,7 @@ public class GoldLableReadService {
                 List<String> head = new ArrayList<>();
                 sheetexcel.getRow(0).forEach(cell ->{
                     if (!"".equals(cell.toString()))
-                        head.add(cell.toString());
+                        head.add(cell.toString().replaceAll("([\n\t ])",""));
                 });
                 LinkedHashMap<String,String> map = new LinkedHashMap<>();
                 for (int i = 1; i <= sheetexcel.getLastRowNum(); i++) {
