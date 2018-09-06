@@ -24,6 +24,13 @@ public class GoldLabelEntity {
 
     private String tag;
 
+    private String hospital;
+
+    private String departments;
+
+    private String anchor;
+
+    private String remark;
     /**
      * 各实体表头结果
      */

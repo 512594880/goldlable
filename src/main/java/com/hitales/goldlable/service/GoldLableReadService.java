@@ -2,6 +2,7 @@ package com.hitales.goldlable.service;
 
 import com.hitales.goldlable.Entity.GoldLabelEntity;
 import com.hitales.goldlable.Entity.JSONResult;
+import com.hitales.goldlable.Tools.Constant;
 import com.hitales.goldlable.Tools.ResultUtil;
 import com.hitales.goldlable.repository.GoldLabelRepository;
 import org.apache.poi.ss.usermodel.Cell;
@@ -14,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,19 +48,29 @@ public class GoldLableReadService {
                         else map.put(head.get(j),cell.toString());
                     }
                     GoldLabelEntity goldLabelEntity = new GoldLabelEntity();
-                    goldLabelEntity.setContext(map.get("上下文"));
-                    goldLabelEntity.setRecordId(map.get("病例（RID）"));
-                    goldLabelEntity.setPatientId(map.get("患者（PID）"));
+
+                    for (int j = 0; j < Constant.DrugShare.length; j++) {
+                        String key = Constant.DrugShare[j];
+                        Method method = goldLabelEntity.getClass().getMethod(Constant.DrugShareMethodName[j], String.class);
+                        method.invoke(goldLabelEntity,map.get(key));
+                        map.remove(key);
+                    }
+
+
+
+//                    goldLabelEntity.setContext(map.get("上下文"));
+//                    goldLabelEntity.setRecordId(map.get("病例（RID）"));
+//                    goldLabelEntity.setPatientId(map.get("患者（PID）"));
                     goldLabelEntity.setType(getType(file.getOriginalFilename()));
-                    map.remove("上下文");
-                    map.remove("病例（RID）");
-                    map.remove("患者（PID）");
+//                    map.remove("上下文");
+//                    map.remove("病例（RID）");
+//                    map.remove("患者（PID）");
                     goldLabelEntity.setList(map);
                     goldLabelRepository.save(goldLabelEntity);
                 }
             }else return ResultUtil.error(111,"文件有问题");
 
-        }catch (IOException e){
+        }catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e){
             e.printStackTrace();
         }
         return ResultUtil.success();
