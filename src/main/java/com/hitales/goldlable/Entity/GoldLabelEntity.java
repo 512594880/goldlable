@@ -3,7 +3,7 @@ package com.hitales.goldlable.Entity;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Created by wangxi on 18/9/4.
@@ -34,7 +34,7 @@ public class GoldLabelEntity {
     /**
      * 各实体表头结果
      */
-    private HashMap<String,String> list;
+    private LinkedHashMap<String,String> list;
 
 
 

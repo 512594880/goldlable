@@ -18,7 +18,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -36,8 +36,11 @@ public class GoldLableReadService {
                 XSSFWorkbook hssfWorkbook = new XSSFWorkbook(inputStream);
                 XSSFSheet sheetexcel = hssfWorkbook.getSheetAt(0);
                 List<String> head = new ArrayList<>();
-                sheetexcel.getRow(0).forEach(cell -> head.add(cell.toString()));
-                HashMap<String,String> map = new HashMap<>();
+                sheetexcel.getRow(0).forEach(cell ->{
+                    if (!"".equals(cell.toString()))
+                        head.add(cell.toString());
+                });
+                LinkedHashMap<String,String> map = new LinkedHashMap<>();
                 for (int i = 1; i <= sheetexcel.getLastRowNum(); i++) {
                     Row row = sheetexcel.getRow(i);
                     if(row == null)
