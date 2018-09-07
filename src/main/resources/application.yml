@@ -4,6 +4,10 @@ spring:
       uri: mongodb://localhost:27017/gold
   application:
     name: mongoweb
+  http:
+      multipart:
+        max-file-size: 100Mb
+        maxRequestSize: 100Mb
 server:
   port: 8888
 

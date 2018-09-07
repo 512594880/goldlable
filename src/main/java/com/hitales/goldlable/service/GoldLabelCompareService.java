@@ -14,6 +14,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.FileOutputStream;
@@ -33,7 +34,7 @@ public class GoldLabelCompareService {
     @Autowired
     private GoldLabelRepository goldLabelRepository;
 
-
+    @Async
     public void compare(List<String> types){
         for (String type:types) {
             JSONObject keymap = Constant.keyMap.get(type);
@@ -81,7 +82,6 @@ public class GoldLabelCompareService {
 
 
             try {
-
                 FileOutputStream fos = new FileOutputStream("./OriginExcel/"+type+".xlsx");
                 xssfWorkbook.write(fos);
                 fos.close();
