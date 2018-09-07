@@ -3,7 +3,6 @@ package com.hitales.goldlable.controller;
 import com.hitales.goldlable.Entity.JSONResult;
 import com.hitales.goldlable.service.GoldLabelCompareService;
 import com.hitales.goldlable.service.GoldLableReadService;
-import com.hitales.goldlable.service.StructService;
 import com.hitales.goldlable.service.TestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,8 +34,6 @@ public class GoldLabelController {
     private GoldLabelCompareService goldLabelCompareService;
     @Autowired
     private TestService testService;
-    @Autowired
-    private StructService structService;
 
 
     @PostMapping(value = "test")
@@ -65,7 +62,7 @@ public class GoldLabelController {
         ArrayList<String> files = new ArrayList<>();
         goldLabelCompareService.compare(types);
         for (String type:types) {
-            String host = null;
+            String host;
             try {
                 host = InetAddress.getLocalHost().getHostAddress();
                 String url = "http://" + host + ":8888/download?type=" + type;
