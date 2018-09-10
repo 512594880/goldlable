@@ -1,7 +1,20 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/gold
+      primary:
+        database: gold
+        host: 127.0.0.1
+        password:
+        username:
+        port: 27017
+#      uri: mongodb://localhost:27017/gold
+      secondary:
+        database: wangxi-test
+        host: 121.196.244.147
+        password: wx123456
+        username: wx
+        port: 3717
+
   application:
     name: mongoweb
   http:
